@@ -89,7 +89,15 @@
                 <div class="container-fluid">
                     <div class="bg-wraper fullWrap">
                         <div class="topbar">
-                            <h2 class="h2"></h2>
+                            {{-- 
+                                Page Title: Automatically set by SetPageTitle middleware
+                                To override in a view, use: @section('page-title', 'Custom Title')
+                                Examples:
+                                - Project List: "Project List"
+                                - Edit Project: "Edit Project - Project Name"
+                                - Create Client: "Create Client"
+                            --}}
+                            <h2 class="h2">@yield('page-title', $pageTitle ?? 'Dashboard')</h2>
                             <div class="btnWrap">
                                 <nav style="--bs-breadcrumb-divider: '|';" aria-label="breadcrumb">
                                     <ol class="breadcrumb">

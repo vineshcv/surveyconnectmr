@@ -69,6 +69,33 @@ Route::get('projects/{project}/edit', [ProjectController::class, 'edit'])->name(
 Route::post('/projects/{project}/assign-questions', [ProjectController::class, 'assignQuestions'])->name('projects.assignQuestions');
 Route::delete('/projects/{project}/questions/{question}', [ProjectController::class, 'removeQuestion'])->name('projects.removeQuestion');
 
+// Vendor management routes
+Route::get('/projects/{project}/vendors', [ProjectController::class, 'manageVendors'])->name('projects.manageVendors');
+Route::post('/projects/{project}/vendors/add-quota', [ProjectController::class, 'addQuotaToVendor'])->name('projects.addQuotaToVendor');
+Route::put('/projects/{project}/vendors/{vendor}/quota', [ProjectController::class, 'updateVendorQuota'])->name('projects.updateVendorQuota');
+Route::get('/projects/{project}/vendors/{vendor}/mapping', [ProjectController::class, 'editVendorMapping'])->name('projects.editVendorMapping');
+Route::put('/projects/{project}/vendors/{vendor}/mapping', [ProjectController::class, 'updateVendorMapping'])->name('projects.updateVendorMapping');
+Route::delete('/projects/{project}/vendors/{vendor}', [ProjectController::class, 'removeVendor'])->name('projects.removeVendor');
+
+// Participants data route
+Route::get('/projects/{project}/participants/data', [ProjectController::class, 'getParticipantsData'])->name('projects.getParticipantsData');
+
+// Survey flow routes (replacing rdata functionality)
+Route::get('/survey', [ProjectController::class, 'surveyRedirect'])->name('survey.redirect');
+Route::get('/survey/questions/{hash}', [ProjectController::class, 'showQuestions'])->name('survey.questions');
+Route::post('/survey/questions/{hash}', [ProjectController::class, 'submitQuestions'])->name('survey.submitQuestions');
+Route::get('/final-redirect/{status}', [ProjectController::class, 'finalRedirect'])->name('final.redirect');
+Route::get('/survey/complete', [ProjectController::class, 'surveyComplete'])->name('survey.complete');
+Route::get('/survey/terminate', [ProjectController::class, 'surveyTerminate'])->name('survey.terminate');
+Route::get('/survey/quotafull', [ProjectController::class, 'surveyQuotafull'])->name('survey.quotafull');
+Route::get('/survey/securityfull', [ProjectController::class, 'surveySecurityFull'])->name('survey.securityFull');
+Route::get('/survey/quota_complete', [ProjectController::class, 'quotaComplete'])->name('survey.quotaComplete');
+Route::get('/survey/already_participate', [ProjectController::class, 'alreadyParticipate'])->name('survey.alreadyParticipate');
+Route::get('/survey/project_pause', [ProjectController::class, 'projectPause'])->name('survey.projectPause');
+Route::get('/survey/project_complete', [ProjectController::class, 'projectComplete'])->name('survey.projectComplete');
+Route::get('/survey/urlerror', [ProjectController::class, 'urlError'])->name('survey.urlError');
+Route::get('/survey/Iperror', [ProjectController::class, 'ipError'])->name('survey.ipError');
+
 
 
 

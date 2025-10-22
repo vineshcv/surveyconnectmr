@@ -32,7 +32,8 @@
         },
         "files": [
             "app/Helpers/helpers.php",
-            "app/Helpers/ExportHelper.php"
+            "app/Helpers/ExportHelper.php",
+            "app/helpers.php"
         ]
     },
     "autoload-dev": {

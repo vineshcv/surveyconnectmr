@@ -43,6 +43,28 @@ class Project extends Model
     }
     public function countries(): BelongsToMany
     {
-        return $this->belongsToMany(Country::class, 'project_countries');
+        return $this->belongsToMany(Country::class, 'project_countries', 'project_id', 'country_id');
+    }
+
+    public function vendors(): BelongsToMany
+    {
+        return $this->belongsToMany(Vendor::class, 'vendor_quotas')
+                    ->withPivot(['quota_allot', 'quota_used'])
+                    ->withTimestamps();
+    }
+
+    public function vendorQuotas(): HasMany
+    {
+        return $this->hasMany(VendorQuota::class);
+    }
+
+    public function vendorMappings(): HasMany
+    {
+        return $this->hasMany(VendorMapping::class);
+    }
+
+    public function participants(): HasMany
+    {
+        return $this->hasMany(Participant::class);
     }
 }
