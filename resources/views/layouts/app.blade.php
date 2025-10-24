@@ -78,6 +78,9 @@
                     <li><a href="{{ url('/invoices') }}" class="link"><i class="fa fa-file-invoice "></i><span>Invoice</span></a></li>
                     <li><a href="{{ url('/questions') }}" class="link"><i class="fa fa-question-circle"></i><span>Question</span></a></li>
                     <li><a href="{{ url('/vendors') }}" class="link"><i class="fa fa-store"></i> <span>Vendor</span></a></li>
+                    @can('view-vendor-registrations')
+                        <li><a href="{{ route('admin.vendor-registrations.index') }}" class="link"><i class="fa fa-user-plus"></i><span>Vendor Registration</span></a></li>
+                    @endcan
                     <li><a href="{{ url('/clients') }}" class="link"><i class="fa fa-address-book"></i> <span>Client</span></a></li>
                     <li><a href="{{ url('/users') }}" class="link"><i class="fa fa-users"></i><span>User</span></a></li>
                     <li><a href="{{ url('/projects') }}" class="link"><i class="fa fa-envelope"></i><span>Projects</span></a></li>
@@ -144,8 +147,6 @@
             $(".content").toggleClass("active");
             $(this).toggleClass("active");
         });
-        new DataTable('#example');
-        new DataTable('#example1');
         $('.select2').select2();
     });
 

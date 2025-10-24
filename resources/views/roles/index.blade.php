@@ -1,12 +1,5 @@
 @extends('layouts.app')
-<style>
-  #createPermissionsContainer .form-check-label{
-    width: 200px !important;
-  }
-  #editPermissionsContainer .form-check-label{
-    width: 200px !important;
-  }
-</style>
+
 @section('content')
 <div class="container-fluid">
 
@@ -26,7 +19,7 @@
 
         <!-- Roles Table -->
         <div class="table-responsive">
-            <table id="example" class="table">
+            <table id="rolesTable" class="table">
                 <thead>
                     <tr>
                         <td>#</td>
@@ -64,6 +57,11 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-3">
+            {{ $roles->links() }}
         </div>
 
     </div>
@@ -181,12 +179,23 @@
 @endsection
 
 @section('scripts')
-<!-- jQuery + jQuery Validate (CDN) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- jQuery Validate (CDN) - jQuery already loaded in main layout -->
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+<style>
+  /* Specific styles for roles page modals only */
+  #createPermissionsContainer .form-check-label{
+    width: 200px !important;
+  }
+  #editPermissionsContainer .form-check-label{
+    width: 200px !important;
+  }
+</style>
 
 <script>
 $(document).ready(function () {
+  // Initialize DataTable for roles table
+  new DataTable('#rolesTable');
 
   // Show Role Modal
   $(document).on('click', '.btn-show', function () {

@@ -1,12 +1,5 @@
 @extends('layouts.app')
-<style>
-    #createRolesContainer .form-check-label{
-        width: 200px;;
-    }
-    #editRolesContainer .form-check-label{
-        width: 200px;;
-    }
-</style>
+
 @section('content')
 <div class="container-fluid">
 
@@ -25,7 +18,7 @@
         <br>
 
         <div class="table-responsive">
-            <table id="example" class="table">
+            <table id="usersTable" class="table">
                 <thead>
                     <tr>
                         <td>SID</td>
@@ -267,12 +260,24 @@
 @endsection
 
 @section('scripts')
-<!-- jQuery + jQuery Validate (CDN) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- jQuery Validate (CDN) - jQuery already loaded in main layout -->
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+<style>
+    /* Specific styles for users page modals only */
+    #createRolesContainer .form-check-label{
+        width: 200px !important;
+    }
+    #editRolesContainer .form-check-label{
+        width: 200px !important;
+    }
+</style>
 
 <script>
 $(document).ready(function() {
+    // Initialize DataTable for users table
+    new DataTable('#usersTable');
+
     // Show user modal details
     $(document).on('click', '.btn-show', function() {
         let userId = $(this).data('id');

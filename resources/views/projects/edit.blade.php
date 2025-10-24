@@ -402,6 +402,13 @@
                     </div>
                 @endif
                 
+                @if(session('error') && session('active_tab') == 'addVendor')
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+                
                 <div class="row">
                     <div class="col-xl-6 col-md-6 col-12">
                         <form method="POST" action="{{ route('projects.addQuotaToVendor', $project->id) }}">
@@ -417,11 +424,21 @@
                     </div>
                     <div class="col-xl-6 col-md-6 col-12">
                         <div class="card _Pcard">
-                            <input type="number" name="quota" class="dropdown_col_full form-control" placeholder="Add Quota" min="0" required>
+                            <input type="number" name="quota" id="quotaInput" class="dropdown_col_full form-control" placeholder="Add Quota" min="0" required>
                         </div>
+                        <div id="quotaError" class="text-danger mt-1" style="display: none; font-size: 0.875rem;"></div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-rounded nav_btn">Add Vendor</button>
                     </form>
+                    
+                    <!-- Quota Information -->
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            Project Quota: {{ $project->quota ?? 0 }} | 
+                            Distributed: {{ $project->vendorQuotas()->sum('quota_allot') }} | 
+                            Remaining: {{ ($project->quota ?? 0) - $project->vendorQuotas()->sum('quota_allot') }}
+                        </small>
+                    </div>
                     
                     <!-- Assigned Vendors Table -->
                     @if($project->vendorQuotas->count() > 0)
@@ -810,6 +827,44 @@ $(document).ready(function () {
 
     // Initialize DataTable
     new DataTable('#participantsTable');
+    
+    // Quota validation
+    const quotaInput = document.getElementById('quotaInput');
+    const quotaError = document.getElementById('quotaError');
+    const projectQuota = {{ $project->quota ?? 0 }};
+    const distributedQuota = {{ $project->vendorQuotas()->sum('quota_allot') }};
+    const remainingQuota = projectQuota - distributedQuota;
+    
+    if (quotaInput) {
+        quotaInput.addEventListener('input', function() {
+            const inputQuota = parseInt(this.value);
+            
+            if (inputQuota > remainingQuota) {
+                quotaError.innerHTML = `<i class="fa fa-exclamation-triangle"></i> Exceeds remaining quota! Remaining: ${remainingQuota}`;
+                quotaError.style.display = 'block';
+                this.style.borderColor = '#dc3545';
+                this.style.backgroundColor = '#f8d7da';
+            } else {
+                quotaError.style.display = 'none';
+                this.style.borderColor = '';
+                this.style.backgroundColor = '';
+            }
+        });
+        
+        // Also validate on form submit
+        document.querySelector('form[action*="addQuotaToVendor"]').addEventListener('submit', function(e) {
+            const inputQuota = parseInt(quotaInput.value);
+            
+            if (inputQuota > remainingQuota) {
+                e.preventDefault();
+                quotaError.innerHTML = `<i class="fa fa-exclamation-triangle"></i> Cannot add vendor! Exceeds remaining quota: ${remainingQuota}`;
+                quotaError.style.display = 'block';
+                quotaInput.style.borderColor = '#dc3545';
+                quotaInput.style.backgroundColor = '#f8d7da';
+                quotaInput.focus();
+            }
+        });
+    }
 });
 </script>
 @endsection

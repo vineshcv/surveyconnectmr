@@ -40,7 +40,11 @@ class RolesAndPermissionsSeeder extends Seeder
         'create-clients',
         'edit-clients',
         'delete-clients',
-        
+        // Vendor Registration permissions
+        'view-vendor-registrations',
+        'approve-vendor-registrations',
+        'reject-vendor-registrations',
+        'manage-vendor-registrations',
     ];
 
     foreach ($permissions as $permission) {

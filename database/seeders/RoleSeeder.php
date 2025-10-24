@@ -23,12 +23,35 @@ class RoleSeeder extends Seeder
             'create-product',
             'edit-product',
             'delete-product',
+            'create-client',
+            'edit-client',
+            'create-vendor',
+            'edit-vendor',
+            'delete-vendor',
+            'create-questions',
+            'edit-questions',
+            'delete-questions',
+            'create-projects',
+            'edit-projects',
+            'delete-projects',
+            'create-invoices',
+            'edit-invoices',
+            'delete-invoices',
+            'create-clients',
+            'edit-clients',
+            'delete-clients',
+            // Vendor Registration permissions
+            'view-vendor-registrations',
+            'approve-vendor-registrations',
+            'reject-vendor-registrations',
+            'manage-vendor-registrations',
         ]);
 
         $productManager->givePermissionTo([
             'create-product',
             'edit-product',
             'delete-product',
+            'view-vendor-registrations',
         ]);
     }
 }

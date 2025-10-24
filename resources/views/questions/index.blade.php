@@ -32,7 +32,7 @@
 
         <!-- Questions Table -->
         <div class="table-responsive">
-            <table id="example" class="table">
+            <table id="questionsTable" class="table">
                 <thead>
                     <tr>
                         <td>#</td>
@@ -117,4 +117,13 @@
 
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+$(document).ready(function() {
+    // Initialize DataTable for questions table
+    new DataTable('#questionsTable');
+});
+</script>
 @endsection
