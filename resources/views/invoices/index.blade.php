@@ -60,7 +60,7 @@
 
         <!-- Invoices Table -->
         <div class="table-responsive">
-            <table id="example1" class="table">
+            <table id="invoicesTable" class="table">
                 <thead>
                     <tr>
                         <td>#</td>
@@ -317,11 +317,13 @@
 @endsection
 
 @section('scripts')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- jQuery Validate (CDN) - jQuery already loaded in main layout -->
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
 <script>
 $(document).ready(function() {
+    // Initialize DataTable for invoices table
+    new DataTable('#invoicesTable');
 
   // Edit button click: fetch invoice data and populate edit modal
   $(document).on('click', '.btn-edit', function() {

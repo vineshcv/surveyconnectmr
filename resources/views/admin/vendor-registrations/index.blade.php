@@ -8,9 +8,12 @@
     @endif
 
     <div class="tableWrap">
+        <h5>Vendor Registration Requests</h5>
+        <br>
+
         <!-- Registrations Table -->
         <div class="table-responsive">
-            <table id="example1" class="table">
+            <table id="vendorRegistrationsTable" class="table">
                 <thead>
                     <tr>
                         <td>#</td>
@@ -298,11 +301,14 @@
 @endsection
 
 @section('scripts')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- jQuery Validate (CDN) - jQuery already loaded in main layout -->
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
 <script>
 $(document).ready(function () {
+    // Initialize DataTable for vendor registrations table
+    new DataTable('#vendorRegistrationsTable');
+
     // Append modals to body to prevent scrolling issues
     $(function() {
         $("#vendorRegistrationShowModal").appendTo("body");

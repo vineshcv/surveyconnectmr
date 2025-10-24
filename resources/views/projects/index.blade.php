@@ -19,7 +19,7 @@
         <br>
 
         <div class="table-responsive">
-            <table id="example1" class="table">
+            <table id="projectsTable" class="table">
                 <thead>
                     <tr>
                         <td>#</td>
@@ -244,6 +244,9 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 <script>
     $(document).ready(function () {
+        // Initialize DataTable for projects table
+        new DataTable('#projectsTable');
+
         // Toggle country selection method based on project type
         $('#project_type').on('change', function () {
             var selectedType = $(this).val();
