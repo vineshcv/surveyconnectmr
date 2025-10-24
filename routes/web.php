@@ -10,6 +10,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\VendorRegistrationController;
+use App\Http\Controllers\VendorAuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -49,6 +50,26 @@ Route::post('/vendor-registration', [VendorRegistrationController::class, 'store
 Route::get('/vendor-registration/thankyou', function () {
     return view('vendors.thankyou');
 })->name('vendor-registration.thankyou');
+
+// Admin vendor registration management
+Route::middleware(['auth', 'permission:view-vendor-registrations'])->group(function () {
+    Route::get('/admin/vendor-registrations', [VendorRegistrationController::class, 'adminIndex'])->name('admin.vendor-registrations.index');
+    Route::get('/admin/vendor-registrations/{vendorRegistration}', [VendorRegistrationController::class, 'show'])->name('admin.vendor-registrations.show');
+});
+
+Route::middleware(['auth', 'permission:approve-vendor-registrations'])->group(function () {
+    Route::post('/admin/vendor-registrations/{vendorRegistration}/approve', [VendorRegistrationController::class, 'approve'])->name('admin.vendor-registrations.approve');
+});
+
+Route::middleware(['auth', 'permission:reject-vendor-registrations'])->group(function () {
+    Route::post('/admin/vendor-registrations/{vendorRegistration}/reject', [VendorRegistrationController::class, 'reject'])->name('admin.vendor-registrations.reject');
+});
+
+// Vendor authentication routes
+Route::get('/vendor/login', [VendorAuthController::class, 'showLoginForm'])->name('vendor.login');
+Route::post('/vendor/login', [VendorAuthController::class, 'login'])->name('vendor.login');
+Route::post('/vendor/logout', [VendorAuthController::class, 'logout'])->name('vendor.logout');
+Route::get('/vendor/dashboard', [VendorAuthController::class, 'dashboard'])->name('vendor.dashboard');
 
 // pdf & csv & csv bulk upload
 Route::get('/vendors/export/pdf', [VendorController::class, 'exportPdf'])->name('vendors.export.pdf');
