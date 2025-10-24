@@ -679,7 +679,7 @@ class ProjectController extends Controller
             
             if ($userCountry && !in_array($userCountry, $projectCountryIds)) {
                 // User's country is not allowed for this project
-                $participantId = 'SCMR' . $this->generateRandomDigits(18);
+                $participantId = $this->generateNewHashKey($vendor->id, $project->id);
                 Participant::create([
                     'participant_id' => $participantId,
                     'project_id' => $project->id,
@@ -714,7 +714,7 @@ class ProjectController extends Controller
                                  ->first();
         if ($duplicateUid) {
             // Create a participant record for the duplicate attempt
-            $participantId = 'SCMR' . $this->generateRandomDigits(18);
+            $participantId = $this->generateNewHashKey($vendor->id, $project->id);
             Participant::create([
                 'participant_id' => $participantId,
                 'project_id' => $project->id,
@@ -741,7 +741,7 @@ class ProjectController extends Controller
             }
 
             // Create participant record
-            $participantId = 'SCMR' . $this->generateRandomDigits(18);
+            $participantId = $this->generateNewHashKey($vendor->id, $project->id);
             $participant = Participant::create([
                 'participant_id' => $participantId,
                 'project_id' => $project->id,
@@ -769,7 +769,7 @@ class ProjectController extends Controller
             }
         } else {
             // IP check failed - create participant with status 7 and redirect to IP error
-            $participantId = 'SCMR' . $this->generateRandomDigits(18);
+            $participantId = $this->generateNewHashKey($vendor->id, $project->id);
             Participant::create([
                 'participant_id' => $participantId,
                 'project_id' => $project->id,
@@ -800,7 +800,7 @@ class ProjectController extends Controller
             // No questions, redirect to customer survey
             $clientUrl = $this->getClientUrl($project->id);
             if ($clientUrl) {
-                $redirectUrl = str_replace('[MH]', $hash, $clientUrl);
+                $redirectUrl = str_replace('[MH]', $participant->participant_id, $clientUrl);
                 return redirect()->away($redirectUrl);
             } else {
                 $participant->update(['status' => 8]); // URL Error status
@@ -830,7 +830,7 @@ class ProjectController extends Controller
         // Get client URL and redirect
         $clientUrl = $this->getClientUrl($project->id);
         if ($clientUrl) {
-            $redirectUrl = str_replace('[MH]', $hash, $clientUrl);
+            $redirectUrl = str_replace('[MH]', $participant->participant_id, $clientUrl);
             return redirect()->away($redirectUrl);
         } else {
             $participant->update(['status' => 8]); // URL Error status
@@ -843,14 +843,14 @@ class ProjectController extends Controller
      */
     public function finalRedirect(Request $request, $status)
     {
-        $hash = $request->get('hash');
+        $rid = $request->get('RID');
         
-        if (!$hash) {
-            return view('survey.error', ['message' => 'Invalid callback - missing hash parameter']);
+        if (!$rid) {
+            return view('survey.error', ['message' => 'Invalid callback - missing RID parameter']);
         }
 
-        // Find participant by hash/participant_id
-        $participant = Participant::where('participant_id', $hash)->first();
+        // Find participant by participant_id (RID contains the hash key)
+        $participant = Participant::where('participant_id', $rid)->first();
         
         if (!$participant) {
             return view('survey.error', ['message' => 'Participant not found']);
@@ -921,7 +921,7 @@ class ProjectController extends Controller
                                     ->first();
 
         if ($vendorMapping && $vendorMapping->$urlField) {
-            $redirectUrl = str_replace('[MH]', $participant->uid, $vendorMapping->$urlField);
+            $redirectUrl = str_replace('[MH]', $participant->participant_id, $vendorMapping->$urlField);
             return redirect()->away($redirectUrl);
         }
 
@@ -945,16 +945,16 @@ class ProjectController extends Controller
      */
     public function surveyComplete(Request $request)
     {
-        $hash = $request->get('hash');
+        $rid = $request->get('RID');
         $uid = $request->get('UID');
         $pid = $request->get('PID');
 
-        if (!$hash || !$uid || !$pid) {
+        if (!$rid || !$uid || !$pid) {
             return view('survey.complete', ['message' => 'Thank you for completing the survey!']);
         }
 
-        // Find participant by hash/participant_id
-        $participant = Participant::where('participant_id', $hash)->first();
+        // Find participant by participant_id (RID contains the hash key)
+        $participant = Participant::where('participant_id', $rid)->first();
         
         if (!$participant) {
             return view('survey.complete', ['message' => 'Thank you for completing the survey!']);
@@ -972,7 +972,7 @@ class ProjectController extends Controller
                                     ->first();
 
         if ($vendorMapping && $vendorMapping->success_url) {
-            $redirectUrl = str_replace('[MH]', $uid, $vendorMapping->success_url);
+            $redirectUrl = str_replace('[MH]', $participant->participant_id, $vendorMapping->success_url);
             return redirect()->away($redirectUrl);
         }
 
@@ -984,15 +984,15 @@ class ProjectController extends Controller
      */
     public function surveyTerminate(Request $request)
     {
-        $hash = $request->get('hash');
+        $rid = $request->get('RID');
         $uid = $request->get('UID');
         $pid = $request->get('PID');
 
-        if (!$hash || !$uid || !$pid) {
+        if (!$rid || !$uid || !$pid) {
             return view('survey.terminate', ['message' => 'Thank you for your participation!']);
         }
 
-        $participant = Participant::where('participant_id', $hash)->first();
+        $participant = Participant::where('uid', $rid)->first();
         
         if (!$participant) {
             return view('survey.terminate', ['message' => 'Thank you for your participation!']);
@@ -1008,7 +1008,7 @@ class ProjectController extends Controller
                                     ->first();
 
         if ($vendorMapping && $vendorMapping->terminate_url) {
-            $redirectUrl = str_replace('[MH]', $uid, $vendorMapping->terminate_url);
+            $redirectUrl = str_replace('[MH]', $participant->participant_id, $vendorMapping->terminate_url);
             return redirect()->away($redirectUrl);
         }
 
@@ -1020,15 +1020,15 @@ class ProjectController extends Controller
      */
     public function surveyQuotafull(Request $request)
     {
-        $hash = $request->get('hash');
+        $rid = $request->get('RID');
         $uid = $request->get('UID');
         $pid = $request->get('PID');
 
-        if (!$hash || !$uid || !$pid) {
+        if (!$rid || !$uid || !$pid) {
             return view('survey.quotafull', ['message' => 'Quota has been reached!']);
         }
 
-        $participant = Participant::where('participant_id', $hash)->first();
+        $participant = Participant::where('uid', $rid)->first();
         
         if (!$participant) {
             return view('survey.quotafull', ['message' => 'Quota has been reached!']);
@@ -1044,7 +1044,7 @@ class ProjectController extends Controller
                                     ->first();
 
         if ($vendorMapping && $vendorMapping->over_quota_url) {
-            $redirectUrl = str_replace('[MH]', $uid, $vendorMapping->over_quota_url);
+            $redirectUrl = str_replace('[MH]', $participant->participant_id, $vendorMapping->over_quota_url);
             return redirect()->away($redirectUrl);
         }
 
@@ -1056,15 +1056,15 @@ class ProjectController extends Controller
      */
     public function surveySecurityFull(Request $request)
     {
-        $hash = $request->get('hash');
+        $rid = $request->get('RID');
         $uid = $request->get('UID');
         $pid = $request->get('PID');
 
-        if (!$hash || !$uid || !$pid) {
+        if (!$rid || !$uid || !$pid) {
             return view('survey.securityfull', ['message' => 'Security quota has been reached!']);
         }
 
-        $participant = Participant::where('participant_id', $hash)->first();
+        $participant = Participant::where('uid', $rid)->first();
         
         if (!$participant) {
             return view('survey.securityfull', ['message' => 'Security quota has been reached!']);
@@ -1080,7 +1080,7 @@ class ProjectController extends Controller
                                     ->first();
 
         if ($vendorMapping && $vendorMapping->security_full_url) {
-            $redirectUrl = str_replace('[MH]', $uid, $vendorMapping->security_full_url);
+            $redirectUrl = str_replace('[MH]', $participant->participant_id, $vendorMapping->security_full_url);
             return redirect()->away($redirectUrl);
         }
 
@@ -1158,6 +1158,42 @@ class ProjectController extends Controller
             $digits .= rand(0, 9);
         }
         return $digits;
+    }
+
+    /**
+     * Generate new hash key format: ENEVNA + vendor_code + alphanumeric + year + month + day
+     * Format: ENEVNA{VENDOR_CODE}{4_ALPHANUMERIC}{YYYY}{MM}{DD}
+     * Example: ENEVNAABC123420251201
+     */
+    private function generateNewHashKey($vendorId, $projectId = null)
+    {
+        // Get vendor code (first 3 characters of vendor_id or generate 3 chars)
+        $vendor = \App\Models\Vendor::find($vendorId);
+        $vendorCode = '';
+        
+        if ($vendor && $vendor->vendor_id) {
+            // Use first 3 characters of vendor_id, pad with random chars if needed
+            $vendorCode = strtoupper(substr($vendor->vendor_id, 0, 3));
+            if (strlen($vendorCode) < 3) {
+                $vendorCode .= strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 3 - strlen($vendorCode)));
+            }
+        } else {
+            // Generate random 3 character vendor code
+            $vendorCode = strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 3));
+        }
+        
+        // Generate 4 alphanumeric characters
+        $alphanumeric = strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 4));
+        
+        // Get current date components
+        $year = date('Y');   // 4 digits
+        $month = date('m');  // 2 digits
+        $day = date('d');    // 2 digits
+        
+        // Construct the new hash key
+        $hashKey = 'ENEVNA' . $vendorCode . $alphanumeric . $year . $month . $day;
+        
+        return $hashKey;
     }
 
     public function destroy(Project $project)

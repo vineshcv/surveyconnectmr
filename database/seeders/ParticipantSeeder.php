@@ -35,7 +35,7 @@ class ParticipantSeeder extends Seeder
                     $vendor = $vendors->random();
                     
                     Participant::create([
-                        'participant_id' => 'PART' . mt_rand(100000, 999999),
+                        'participant_id' => 'ENEVNA' . strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 3)) . strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 4)) . date('Ymd'),
                         'project_id' => $project->id,
                         'vendor_id' => $vendor->id,
                         'uid' => 'UID' . mt_rand(100000, 999999),
