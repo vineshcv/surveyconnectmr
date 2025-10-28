@@ -88,4 +88,31 @@ class VendorAuthController extends Controller
 
         return view('vendor.dashboard', compact('vendorRegistration', 'vendor', 'projects', 'participants'));
     }
+
+    public function updateUrls(Request $request)
+    {
+        $vendorRegistration = VendorRegistration::find(session('vendor_id'));
+        
+        if (!$vendorRegistration) {
+            return redirect()->route('vendor.login');
+        }
+
+        // Get vendor record
+        $vendor = Vendor::where('vendor_name', $vendorRegistration->vendor_name)->first();
+        
+        if (!$vendor) {
+            return back()->with('error', 'Vendor not found.');
+        }
+
+        $validated = $request->validate([
+            'completed_redirect_url' => 'required|url',
+            'terminated_redirect_url' => 'required|url',
+            'quote_full_redirect_url' => 'required|url',
+            'security_full_redirect_url' => 'nullable|url',
+        ]);
+
+        $vendor->update($validated);
+
+        return back()->with('success', 'Redirection URLs updated successfully.');
+    }
 }

@@ -34,6 +34,93 @@
     </div>
 </div>
 
+@if($vendor)
+<!-- Redirection URLs Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="tableWrap">
+            <h5>Redirection URLs</h5>
+            
+            @if(Session::has('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ Session::get('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
+            @if(Session::has('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ Session::get('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('vendor.updateUrls') }}">
+                @csrf
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="completed_redirect_url" class="form-label">Completed Redirect URL *</label>
+                        <input type="url" 
+                               class="form-control @error('completed_redirect_url') is-invalid @enderror" 
+                               id="completed_redirect_url" 
+                               name="completed_redirect_url" 
+                               value="{{ old('completed_redirect_url', $vendor->completed_redirect_url) }}" 
+                               required>
+                        @error('completed_redirect_url')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="terminated_redirect_url" class="form-label">Terminated Redirect URL *</label>
+                        <input type="url" 
+                               class="form-control @error('terminated_redirect_url') is-invalid @enderror" 
+                               id="terminated_redirect_url" 
+                               name="terminated_redirect_url" 
+                               value="{{ old('terminated_redirect_url', $vendor->terminated_redirect_url) }}" 
+                               required>
+                        @error('terminated_redirect_url')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="quote_full_redirect_url" class="form-label">Quota Full Redirect URL *</label>
+                        <input type="url" 
+                               class="form-control @error('quote_full_redirect_url') is-invalid @enderror" 
+                               id="quote_full_redirect_url" 
+                               name="quote_full_redirect_url" 
+                               value="{{ old('quote_full_redirect_url', $vendor->quote_full_redirect_url) }}" 
+                               required>
+                        @error('quote_full_redirect_url')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="security_full_redirect_url" class="form-label">Security Full Redirect URL</label>
+                        <input type="url" 
+                               class="form-control @error('security_full_redirect_url') is-invalid @enderror" 
+                               id="security_full_redirect_url" 
+                               name="security_full_redirect_url" 
+                               value="{{ old('security_full_redirect_url', $vendor->security_full_redirect_url) }}">
+                        @error('security_full_redirect_url')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+                
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary btn-rounded">
+                        <i class="fa fa-save"></i> Update URLs
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
 <!-- Projects Section -->
 <div class="row mb-4">
     <div class="col-12">

@@ -71,6 +71,7 @@ Route::post('/vendor/login', [VendorAuthController::class, 'login'])->name('vend
 Route::get('/vendor/logout', [VendorAuthController::class, 'logout'])->name('vendor.logout');
 Route::post('/vendor/logout', [VendorAuthController::class, 'logout'])->name('vendor.logout');
 Route::get('/vendor/dashboard', [VendorAuthController::class, 'dashboard'])->name('vendor.dashboard');
+Route::post('/vendor/update-urls', [VendorAuthController::class, 'updateUrls'])->name('vendor.updateUrls');
 
 // pdf & csv & csv bulk upload
 Route::get('/vendors/export/pdf', [VendorController::class, 'exportPdf'])->name('vendors.export.pdf');
