@@ -22,8 +22,11 @@ class VendorAuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        // Find vendor registration by username
-        $vendorRegistration = VendorRegistration::where('username', $request->username)
+        // Find vendor registration by username or email
+        $vendorRegistration = VendorRegistration::where(function($query) use ($request) {
+                $query->where('username', $request->username)
+                      ->orWhere('email', $request->username);
+            })
             ->where('status', VendorRegistration::STATUS_APPROVED)
             ->first();
 

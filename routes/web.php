@@ -68,6 +68,7 @@ Route::middleware(['auth', 'permission:reject-vendor-registrations'])->group(fun
 // Vendor authentication routes
 Route::get('/vendor/login', [VendorAuthController::class, 'showLoginForm'])->name('vendor.login');
 Route::post('/vendor/login', [VendorAuthController::class, 'login'])->name('vendor.login');
+Route::get('/vendor/logout', [VendorAuthController::class, 'logout'])->name('vendor.logout');
 Route::post('/vendor/logout', [VendorAuthController::class, 'logout'])->name('vendor.logout');
 Route::get('/vendor/dashboard', [VendorAuthController::class, 'dashboard'])->name('vendor.dashboard');
 

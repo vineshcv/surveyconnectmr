@@ -1,0 +1,158 @@
+@extends('layouts.vendor-app')
+
+@section('title', 'Vendor Dashboard')
+
+@section('page-title', 'Dashboard')
+
+@section('content')
+
+<!-- Statistics Cards -->
+<div class="row">
+    <div class="col-xl-3 col-md-6 col-12">
+        <div class="card _Pcard">
+            <h2>{{ $projects->count() }}</h2>
+            <h6>Assigned Projects</h6>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 col-12">
+        <div class="card _Pcard">
+            <h2>{{ $participants->count() }}</h2>
+            <h6>Total Participants</h6>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 col-12">
+        <div class="card _Pcard">
+            <h2>{{ $participants->where('status', 1)->count() }}</h2>
+            <h6>Completed</h6>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 col-12">
+        <div class="card _Pcard">
+            <h2>{{ $participants->where('status', 5)->count() }}</h2>
+            <h6>In Progress</h6>
+        </div>
+    </div>
+</div>
+
+<!-- Projects Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="tableWrap">
+            <h5>Assigned Projects</h5>
+            
+            @if($projects->count() > 0)
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>Project Name</td>
+                                <td>Client</td>
+                                <td>Quota Allotted</td>
+                                <td>Quota Used</td>
+                                <td>Status</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($projects as $project)
+                                <tr>
+                                    <td>
+                                        <strong>{{ $project->name }}</strong>
+                                        <br><small class="text-muted">{{ $project->projectID }}</small>
+                                    </td>
+                                    <td>{{ $project->client->name ?? 'N/A' }}</td>
+                                    <td>{{ $project->pivot->quota_allot ?? 0 }}</td>
+                                    <td>{{ $project->pivot->quota_used ?? 0 }}</td>
+                                    <td>
+                                        @if($project->status === 'active')
+                                            <span class="badge bg-success">Active</span>
+                                        @elseif($project->status === 'paused')
+                                            <span class="badge bg-warning">Paused</span>
+                                        @else
+                                            <span class="badge bg-secondary">{{ ucfirst($project->status) }}</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="text-center py-4">
+                    <p class="text-muted">No projects assigned yet.</p>
+                </div>
+            @endif
+        </div>
+    </div>
+</div>
+
+<!-- Recent Participants -->
+<div class="row">
+    <div class="col-12">
+        <div class="tableWrap">
+            <h5>Recent Participants</h5>
+            
+            @if($participants->count() > 0)
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>Participant ID</td>
+                                <td>Project</td>
+                                <td>UID</td>
+                                <td>Status</td>
+                                <td>Start Time</td>
+                                <td>End Time</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($participants as $participant)
+                                <tr>
+                                    <td>
+                                        <code>{{ $participant->participant_id }}</code>
+                                    </td>
+                                    <td>{{ $participant->project->name ?? 'N/A' }}</td>
+                                    <td>{{ $participant->uid }}</td>
+                                    <td>
+                                        @switch($participant->status)
+                                            @case(1)
+                                                <span class="badge bg-success">Complete</span>
+                                                @break
+                                            @case(2)
+                                                <span class="badge bg-warning">Terminate</span>
+                                                @break
+                                            @case(3)
+                                                <span class="badge bg-info">Quota Full</span>
+                                                @break
+                                            @case(4)
+                                                <span class="badge bg-danger">Security Full</span>
+                                                @break
+                                            @case(5)
+                                                <span class="badge bg-primary">Started</span>
+                                                @break
+                                            @case(7)
+                                                <span class="badge bg-secondary">IP Fail</span>
+                                                @break
+                                            @case(10)
+                                                <span class="badge bg-dark">Already Participated</span>
+                                                @break
+                                            @default
+                                                <span class="badge bg-light text-dark">Unknown</span>
+                                        @endswitch
+                                    </td>
+                                    <td>{{ $participant->start_loi ? $participant->start_loi->format('M d, Y H:i') : 'N/A' }}</td>
+                                    <td>{{ $participant->end_loi ? $participant->end_loi->format('M d, Y H:i') : 'N/A' }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="text-center py-4">
+                    <p class="text-muted">No participants yet.</p>
+                </div>
+            @endif
+        </div>
+    </div>
+</div>
+
+@endsection

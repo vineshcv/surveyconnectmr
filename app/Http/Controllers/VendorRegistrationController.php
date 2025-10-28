@@ -14,7 +14,7 @@ class VendorRegistrationController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['index', 'store']]);
         $this->middleware('permission:view-vendor-registrations', ['only' => ['adminIndex', 'show']]);
         $this->middleware('permission:approve-vendor-registrations', ['only' => ['approve']]);
         $this->middleware('permission:reject-vendor-registrations', ['only' => ['reject']]);
@@ -97,8 +97,8 @@ class VendorRegistrationController extends Controller
             'username' => 'required|string|min:3|max:50|unique:vendor_registrations,username',
         ]);
 
-        // Generate password
-        $password = Str::random(8);
+        // Default password for all vendors
+        $password = '12345';
         
         // Update registration
         $vendorRegistration->update([
