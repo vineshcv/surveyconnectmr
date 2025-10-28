@@ -760,7 +760,7 @@ class ProjectController extends Controller
             // Get client URL and redirect
             $clientUrl = $this->getClientUrl($project->id);
             if ($clientUrl) {
-                $redirectUrl = str_replace('[MH]', $participantId, $clientUrl);
+                $redirectUrl = str_replace('[RID]', $participantId, $clientUrl);
                 return redirect()->away($redirectUrl);
             } else {
                 // No client URL - update participant status to 8 and redirect to URL error
@@ -800,7 +800,7 @@ class ProjectController extends Controller
             // No questions, redirect to customer survey
             $clientUrl = $this->getClientUrl($project->id);
             if ($clientUrl) {
-                $redirectUrl = str_replace('[MH]', $participant->participant_id, $clientUrl);
+                $redirectUrl = str_replace('[RID]', $participant->participant_id, $clientUrl);
                 return redirect()->away($redirectUrl);
             } else {
                 $participant->update(['status' => 8]); // URL Error status
@@ -830,7 +830,7 @@ class ProjectController extends Controller
         // Get client URL and redirect
         $clientUrl = $this->getClientUrl($project->id);
         if ($clientUrl) {
-            $redirectUrl = str_replace('[MH]', $participant->participant_id, $clientUrl);
+            $redirectUrl = str_replace('[RID]', $participant->participant_id, $clientUrl);
             return redirect()->away($redirectUrl);
         } else {
             $participant->update(['status' => 8]); // URL Error status
@@ -921,7 +921,7 @@ class ProjectController extends Controller
                                     ->first();
 
         if ($vendorMapping && $vendorMapping->$urlField) {
-            $redirectUrl = str_replace('[MH]', $participant->participant_id, $vendorMapping->$urlField);
+            $redirectUrl = str_replace('[RID]', $participant->participant_id, $vendorMapping->$urlField);
             return redirect()->away($redirectUrl);
         }
 
@@ -972,7 +972,7 @@ class ProjectController extends Controller
                                     ->first();
 
         if ($vendorMapping && $vendorMapping->success_url) {
-            $redirectUrl = str_replace('[MH]', $participant->participant_id, $vendorMapping->success_url);
+            $redirectUrl = str_replace('[RID]', $participant->participant_id, $vendorMapping->success_url);
             return redirect()->away($redirectUrl);
         }
 
@@ -1008,7 +1008,7 @@ class ProjectController extends Controller
                                     ->first();
 
         if ($vendorMapping && $vendorMapping->terminate_url) {
-            $redirectUrl = str_replace('[MH]', $participant->participant_id, $vendorMapping->terminate_url);
+            $redirectUrl = str_replace('[RID]', $participant->participant_id, $vendorMapping->terminate_url);
             return redirect()->away($redirectUrl);
         }
 
@@ -1044,7 +1044,7 @@ class ProjectController extends Controller
                                     ->first();
 
         if ($vendorMapping && $vendorMapping->over_quota_url) {
-            $redirectUrl = str_replace('[MH]', $participant->participant_id, $vendorMapping->over_quota_url);
+            $redirectUrl = str_replace('[RID]', $participant->participant_id, $vendorMapping->over_quota_url);
             return redirect()->away($redirectUrl);
         }
 
@@ -1080,7 +1080,7 @@ class ProjectController extends Controller
                                     ->first();
 
         if ($vendorMapping && $vendorMapping->security_full_url) {
-            $redirectUrl = str_replace('[MH]', $participant->participant_id, $vendorMapping->security_full_url);
+            $redirectUrl = str_replace('[RID]', $participant->participant_id, $vendorMapping->security_full_url);
             return redirect()->away($redirectUrl);
         }
 
